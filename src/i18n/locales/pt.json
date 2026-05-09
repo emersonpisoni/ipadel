@@ -1,0 +1,195 @@
+{
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "back": "voltar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "loading": "Carregando…",
+    "yes": "Sim",
+    "no": "Não",
+    "of": "de",
+    "average": "média",
+    "today": "Hoje",
+    "previous": "Anterior",
+    "next": "Próximo"
+  },
+  "appName": "ipadel",
+  "auth": {
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "loginTitle": "Entrar",
+    "loginDescription": "Login simulado — escolha um papel e um usuário.",
+    "role": "Papel",
+    "user": "Usuário",
+    "selectUser": "Selecione um usuário"
+  },
+  "login": {
+    "headline": "Acompanhe a evolução dos seus alunos.",
+    "subheadline": "A plataforma que professores de padel usam para avaliar, agendar e enviar relatórios.",
+    "features": {
+      "evaluation": {
+        "title": "Avaliação por fundamento",
+        "description": "Smash, bandeja, víbora e mais 7 fundamentos a cada aula."
+      },
+      "schedule": {
+        "title": "Agenda integrada",
+        "description": "Marque aulas, gerencie compromissos e nunca mais perca um horário."
+      },
+      "reports": {
+        "title": "Relatórios profissionais",
+        "description": "Gere PDFs com a evolução do aluno para enviar via WhatsApp."
+      }
+    },
+    "tagline": "padel · evolução · resultados"
+  },
+  "roles": {
+    "teacher": "Professor",
+    "student": "Aluno"
+  },
+  "nav": {
+    "overview": "Visão geral",
+    "students": "Alunos",
+    "schedule": "Agenda",
+    "evaluations": "Avaliações",
+    "drills": "Drills",
+    "finance": "Financeiro",
+    "reports": "Relatórios",
+    "settings": "Configurações"
+  },
+  "skills": {
+    "serve": "Saque",
+    "smash": "Smash",
+    "bandeja": "Bandeja",
+    "vibora": "Víbora",
+    "volley": "Voleio",
+    "globo": "Globo",
+    "wallDefense": "Defesa de parede",
+    "chiquita": "Chiquita",
+    "rulo": "Rulo",
+    "positioning": "Posicionamento"
+  },
+  "bookingStatus": {
+    "scheduled": "Agendada",
+    "completed": "Realizada",
+    "cancelled": "Cancelada"
+  },
+  "dashboard": {
+    "title": "Visão geral",
+    "subtitle": "Resumo da sua atividade de coaching.",
+    "metrics": {
+      "activeStudents": "Alunos ativos",
+      "lessonsThisMonth": "Aulas no mês",
+      "lessonsThisMonthHint": "mês corrente",
+      "averageScore": "Média geral",
+      "averageScoreHint": "todas as aulas",
+      "nextLesson": "Próxima aula",
+      "nextLessonHint": "agenda em breve"
+    },
+    "recentActivity": "Atividade recente",
+    "noRecentActivity": "Nenhuma aula registrada ainda.",
+    "viewAll": "Ver tudo",
+    "quickActions": "Ações rápidas",
+    "newLesson": "Registrar nova aula",
+    "viewAllStudents": "Ver todos os alunos",
+    "evaluationHistory": "Histórico de avaliações"
+  },
+  "students": {
+    "title": "Meus alunos",
+    "subtitle": "Clique em um aluno para registrar uma nova aula ou ver evolução.",
+    "lessonsRegistered_one": "{{count}} aula registrada",
+    "lessonsRegistered_other": "{{count}} aulas registradas"
+  },
+  "studentDetail": {
+    "newLesson": "Nova aula",
+    "evolution": "Evolução",
+    "lessonHistory": "Histórico de aulas",
+    "noLessons": "Nenhuma aula registrada.",
+    "report": "Relatório",
+    "newLessonTitle": "Registrar nova aula",
+    "newLessonHint": "Notas pré-preenchidas com a aula de {{date}} — ajuste o que mudou.",
+    "newLessonHintFirst": "Primeira aula deste aluno — sliders começam em 5.",
+    "date": "Data",
+    "observations": "Observações da aula",
+    "observationsPlaceholder": "Como foi a aula no geral?",
+    "skillEvaluation": "Avaliação por fundamento (0–10)",
+    "commentPlaceholder": "comentário (opcional)",
+    "saveLesson": "Salvar aula",
+    "studentNotFound": "Aluno não encontrado."
+  },
+  "evaluations": {
+    "title": "Avaliações",
+    "subtitle": "Histórico completo das aulas registradas.",
+    "filterStudent": "Aluno",
+    "allStudents": "Todos os alunos",
+    "evaluationCount_one": "{{count}} avaliação",
+    "evaluationCount_other": "{{count}} avaliações",
+    "noResults": "Nenhuma avaliação encontrada.",
+    "viewStudent": "Ver no aluno",
+    "highlight": "Destaque",
+    "needsWork": "A desenvolver"
+  },
+  "schedule": {
+    "title": "Agenda",
+    "subtitle": "Marque aulas no calendário e acompanhe seus próximos compromissos.",
+    "newBooking": "Novo agendamento",
+    "newBookingDescription": "Marque uma aula no seu calendário.",
+    "upcoming": "Próximos",
+    "noUpcoming": "Nenhum agendamento futuro.",
+    "selectStudent": "Selecione um aluno",
+    "date": "Data",
+    "time": "Horário",
+    "duration": "Duração",
+    "minutes": "{{count}} minutos",
+    "minutesShort": "min",
+    "observations": "Observações",
+    "observationsPlaceholder": "Foco da aula, lembretes…",
+    "markCompleted": "Marcar realizada e avaliar",
+    "cancelBooking": "Cancelar agendamento",
+    "previousMonth": "Mês anterior",
+    "nextMonth": "Próximo mês",
+    "moreCount": "+{{count}} mais"
+  },
+  "studentDashboard": {
+    "greeting": "Olá, {{name}}",
+    "lessons": "Aulas",
+    "lastAverage": "Média última aula",
+    "yourEvolution": "Sua evolução",
+    "history": "Histórico",
+    "noLessons": "Você ainda não tem aulas registradas."
+  },
+  "report": {
+    "title": "Relatório de aula",
+    "print": "Imprimir / Salvar PDF",
+    "student": "Aluno",
+    "teacher": "Professor",
+    "lessonDate": "Data da aula",
+    "averageScore": "Média geral",
+    "highlight": "Destaque",
+    "needsWork": "A desenvolver",
+    "observations": "Observações",
+    "skillEvaluation": "Avaliação por fundamento",
+    "footer": "Gerado por ipadel · {{date}}",
+    "lessonNotFound": "Aula não encontrada."
+  },
+  "ideas": {
+    "buttonLabel": "Próximas ideias",
+    "title": "Próximas ideias",
+    "description": "Evoluções planejadas para esta seção."
+  },
+  "placeholder": {
+    "comingSoon": "Em breve",
+    "underConstruction": "Esta seção ainda está em desenvolvimento."
+  },
+  "placeholders": {
+    "drills": "Biblioteca de exercícios e drills personalizáveis.",
+    "finance": "Cobranças automáticas e gestão de mensalidades.",
+    "reports": "Relatórios detalhados em PDF para enviar aos alunos.",
+    "settings": "Preferências da conta e do app."
+  },
+  "weekdays": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+  "months": [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ]
+}

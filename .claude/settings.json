@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(curl -sf http://localhost:5174/ -o /dev/null)",
+      "Bash(curl -sf http://localhost:5177/ -o /dev/null)",
+      "Bash(curl -sf http://localhost:5177/src/main.tsx -o /tmp/main_response)",
+      "Read(//tmp/**)",
+      "Bash(npx shadcn@latest add dialog popover --yes)",
+      "Bash(npx shadcn@latest add sheet --yes)"
+    ]
+  }
+}

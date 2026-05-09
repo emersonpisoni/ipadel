@@ -1,0 +1,195 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "back",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading…",
+    "yes": "Yes",
+    "no": "No",
+    "of": "of",
+    "average": "avg",
+    "today": "Today",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "appName": "ipadel",
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "loginTitle": "Sign in",
+    "loginDescription": "Mock login — pick a role and a user.",
+    "role": "Role",
+    "user": "User",
+    "selectUser": "Select a user"
+  },
+  "login": {
+    "headline": "Track your students' progress.",
+    "subheadline": "The platform padel coaches use to evaluate, schedule and send reports.",
+    "features": {
+      "evaluation": {
+        "title": "Skill-based evaluation",
+        "description": "Smash, bandeja, vibora and 7 more skills every lesson."
+      },
+      "schedule": {
+        "title": "Integrated schedule",
+        "description": "Book lessons, manage appointments and never miss a slot."
+      },
+      "reports": {
+        "title": "Pro reports",
+        "description": "Generate PDFs with student progress to send via WhatsApp."
+      }
+    },
+    "tagline": "padel · progress · results"
+  },
+  "roles": {
+    "teacher": "Teacher",
+    "student": "Student"
+  },
+  "nav": {
+    "overview": "Overview",
+    "students": "Students",
+    "schedule": "Schedule",
+    "evaluations": "Evaluations",
+    "drills": "Drills",
+    "finance": "Finance",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "skills": {
+    "serve": "Serve",
+    "smash": "Smash",
+    "bandeja": "Bandeja",
+    "vibora": "Vibora",
+    "volley": "Volley",
+    "globo": "Lob",
+    "wallDefense": "Wall defense",
+    "chiquita": "Chiquita",
+    "rulo": "Rulo",
+    "positioning": "Positioning"
+  },
+  "bookingStatus": {
+    "scheduled": "Scheduled",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "Summary of your coaching activity.",
+    "metrics": {
+      "activeStudents": "Active students",
+      "lessonsThisMonth": "Lessons this month",
+      "lessonsThisMonthHint": "current month",
+      "averageScore": "Overall average",
+      "averageScoreHint": "all lessons",
+      "nextLesson": "Next lesson",
+      "nextLessonHint": "schedule coming soon"
+    },
+    "recentActivity": "Recent activity",
+    "noRecentActivity": "No lessons recorded yet.",
+    "viewAll": "View all",
+    "quickActions": "Quick actions",
+    "newLesson": "Record new lesson",
+    "viewAllStudents": "View all students",
+    "evaluationHistory": "Evaluation history"
+  },
+  "students": {
+    "title": "My students",
+    "subtitle": "Click on a student to record a new lesson or see progress.",
+    "lessonsRegistered_one": "{{count}} lesson recorded",
+    "lessonsRegistered_other": "{{count}} lessons recorded"
+  },
+  "studentDetail": {
+    "newLesson": "New lesson",
+    "evolution": "Progress",
+    "lessonHistory": "Lesson history",
+    "noLessons": "No lessons recorded.",
+    "report": "Report",
+    "newLessonTitle": "Record new lesson",
+    "newLessonHint": "Scores pre-filled with the lesson from {{date}} — adjust what changed.",
+    "newLessonHintFirst": "First lesson for this student — sliders start at 5.",
+    "date": "Date",
+    "observations": "Lesson observations",
+    "observationsPlaceholder": "How did the lesson go overall?",
+    "skillEvaluation": "Skill evaluation (0–10)",
+    "commentPlaceholder": "comment (optional)",
+    "saveLesson": "Save lesson",
+    "studentNotFound": "Student not found."
+  },
+  "evaluations": {
+    "title": "Evaluations",
+    "subtitle": "Full history of recorded lessons.",
+    "filterStudent": "Student",
+    "allStudents": "All students",
+    "evaluationCount_one": "{{count}} evaluation",
+    "evaluationCount_other": "{{count}} evaluations",
+    "noResults": "No evaluations found.",
+    "viewStudent": "View student",
+    "highlight": "Highlight",
+    "needsWork": "Needs work"
+  },
+  "schedule": {
+    "title": "Schedule",
+    "subtitle": "Book lessons on the calendar and track your upcoming sessions.",
+    "newBooking": "New booking",
+    "newBookingDescription": "Schedule a lesson on your calendar.",
+    "upcoming": "Upcoming",
+    "noUpcoming": "No upcoming bookings.",
+    "selectStudent": "Select a student",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "minutes": "{{count}} minutes",
+    "minutesShort": "min",
+    "observations": "Notes",
+    "observationsPlaceholder": "Lesson focus, reminders…",
+    "markCompleted": "Mark completed and evaluate",
+    "cancelBooking": "Cancel booking",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "moreCount": "+{{count}} more"
+  },
+  "studentDashboard": {
+    "greeting": "Hi, {{name}}",
+    "lessons": "Lessons",
+    "lastAverage": "Last lesson avg",
+    "yourEvolution": "Your progress",
+    "history": "History",
+    "noLessons": "You don't have any lessons yet."
+  },
+  "report": {
+    "title": "Lesson report",
+    "print": "Print / Save PDF",
+    "student": "Student",
+    "teacher": "Teacher",
+    "lessonDate": "Lesson date",
+    "averageScore": "Overall average",
+    "highlight": "Highlight",
+    "needsWork": "Needs work",
+    "observations": "Notes",
+    "skillEvaluation": "Skill evaluation",
+    "footer": "Generated by ipadel · {{date}}",
+    "lessonNotFound": "Lesson not found."
+  },
+  "ideas": {
+    "buttonLabel": "Future ideas",
+    "title": "Future ideas",
+    "description": "Planned improvements for this section."
+  },
+  "placeholder": {
+    "comingSoon": "Coming soon",
+    "underConstruction": "This section is still under development."
+  },
+  "placeholders": {
+    "drills": "Library of customizable drills and exercises.",
+    "finance": "Automatic billing and tuition management.",
+    "reports": "Detailed PDF reports to send to students.",
+    "settings": "Account and app preferences."
+  },
+  "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  "months": [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ]
+}
