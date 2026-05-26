@@ -11,6 +11,8 @@ import Schedule from '@/routes/Schedule'
 import StudentDashboard from '@/routes/StudentDashboard'
 import StudentDetail from '@/routes/StudentDetail'
 import StudentsList from '@/routes/StudentsList'
+import TacticBoardEditor from '@/routes/TacticBoardEditor'
+import TacticsList from '@/routes/TacticsList'
 import TeacherDashboard from '@/routes/TeacherDashboard'
 import UpdatePassword from '@/routes/UpdatePassword'
 import type { Role } from '@/types'
@@ -81,6 +83,8 @@ export default function App() {
           <Route path="students/:studentId" element={<StudentDetail />} />
           <Route path="schedule" element={<Schedule />} />
           <Route path="evaluations" element={<EvaluationsList />} />
+          <Route path="tactics" element={<TacticsList />} />
+          <Route path="tactics/:boardId" element={<TacticBoardEditor />} />
           <Route
             path="drills"
             element={

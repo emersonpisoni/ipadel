@@ -81,6 +81,7 @@
     "students": "Students",
     "schedule": "Schedule",
     "evaluations": "Evaluations",
+    "tactics": "Tactics",
     "drills": "Drills",
     "finance": "Finance",
     "reports": "Reports",
@@ -218,6 +219,32 @@
   "placeholder": {
     "comingSoon": "Coming soon",
     "underConstruction": "This section is still under development."
+  },
+  "tactics": {
+    "title": "Tactic boards",
+    "subtitle": "Create court diagrams to explain positioning and movement.",
+    "newBoard": "New board",
+    "emptyTitle": "You don't have any boards yet",
+    "emptyDescription": "Create your first board to start sketching plays.",
+    "untitled": "Untitled",
+    "boardTitle": "Title",
+    "boardTitlePlaceholder": "e.g., Defensive wall escape",
+    "boardNotes": "Notes",
+    "boardNotesPlaceholder": "Focus, context, instructions…",
+    "tools": {
+      "select": "Select",
+      "addPlayerA": "Player A",
+      "addPlayerB": "Player B",
+      "arrowMovement": "Arrow (movement)",
+      "arrowBall": "Arrow (ball)",
+      "pen": "Pen",
+      "erase": "Erase"
+    },
+    "saving": "Saving…",
+    "saved": "Saved",
+    "deleteConfirm": "Delete this board?",
+    "clearScene": "Clear all",
+    "lastEdited": "Edited on {{date}}"
   },
   "placeholders": {
     "drills": "Library of customizable drills and exercises.",

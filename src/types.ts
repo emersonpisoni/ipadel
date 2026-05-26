@@ -60,3 +60,48 @@ export interface Booking {
 export const DURATIONS = [30, 45, 60, 90] as const
 
 export type Role = 'teacher' | 'student'
+
+export type TacticTeam = 'A' | 'B'
+export type TacticArrowKind = 'movement' | 'ball'
+
+export interface TacticPlayer {
+  id: string
+  x: number
+  y: number
+  team: TacticTeam
+  label?: string
+}
+
+export interface TacticArrow {
+  id: string
+  from: { x: number; y: number }
+  to: { x: number; y: number }
+  kind: TacticArrowKind
+}
+
+export interface TacticStroke {
+  id: string
+  points: { x: number; y: number }[]
+  color?: string
+  width?: number
+}
+
+export interface TacticScene {
+  players: TacticPlayer[]
+  arrows: TacticArrow[]
+  strokes: TacticStroke[]
+}
+
+export interface TacticBoard {
+  id: string
+  teacherId: string
+  title: string
+  notes?: string
+  scene: TacticScene
+}
+
+export const EMPTY_TACTIC_SCENE: TacticScene = {
+  players: [],
+  arrows: [],
+  strokes: [],
+}

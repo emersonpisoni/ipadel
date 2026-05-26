@@ -81,6 +81,7 @@
     "students": "Alumnos",
     "schedule": "Agenda",
     "evaluations": "Evaluaciones",
+    "tactics": "Tácticas",
     "drills": "Ejercicios",
     "finance": "Finanzas",
     "reports": "Informes",
@@ -218,6 +219,32 @@
   "placeholder": {
     "comingSoon": "Próximamente",
     "underConstruction": "Esta sección aún está en desarrollo."
+  },
+  "tactics": {
+    "title": "Pizarras tácticas",
+    "subtitle": "Crea diagramas de la pista para explicar posicionamiento y movimiento.",
+    "newBoard": "Nueva pizarra",
+    "emptyTitle": "Aún no tienes pizarras",
+    "emptyDescription": "Crea tu primera pizarra para empezar a dibujar jugadas.",
+    "untitled": "Sin título",
+    "boardTitle": "Título",
+    "boardTitlePlaceholder": "Ej: Salida defensiva por la pared",
+    "boardNotes": "Notas",
+    "boardNotesPlaceholder": "Foco, contexto, instrucciones…",
+    "tools": {
+      "select": "Seleccionar",
+      "addPlayerA": "Jugador A",
+      "addPlayerB": "Jugador B",
+      "arrowMovement": "Flecha (movimiento)",
+      "arrowBall": "Flecha (pelota)",
+      "pen": "Bolígrafo",
+      "erase": "Borrar"
+    },
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "deleteConfirm": "¿Eliminar esta pizarra?",
+    "clearScene": "Limpiar todo",
+    "lastEdited": "Editada el {{date}}"
   },
   "placeholders": {
     "drills": "Biblioteca de ejercicios y drills personalizables.",

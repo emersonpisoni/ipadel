@@ -15,13 +15,16 @@ import type {
   StudentRow,
 } from '@/lib/database'
 import { supabase } from '@/lib/supabase'
-import type {
-  Booking,
-  BookingStatus,
-  Evaluation,
-  Lesson,
-  Student,
-  StudentStatus,
+import {
+  EMPTY_TACTIC_SCENE,
+  type Booking,
+  type BookingStatus,
+  type Evaluation,
+  type Lesson,
+  type Student,
+  type StudentStatus,
+  type TacticBoard,
+  type TacticScene,
 } from '@/types'
 
 interface NewStudent {
@@ -52,14 +55,31 @@ interface NewBooking {
   observations?: string
 }
 
+interface NewTacticBoard {
+  title: string
+  notes?: string
+  scene?: TacticScene
+}
+
+interface TacticBoardPatch {
+  title?: string
+  notes?: string | null
+  scene?: TacticScene
+}
+
 interface Result {
   error: string | null
+}
+
+interface TacticBoardCreateResult extends Result {
+  id?: string
 }
 
 interface DataValue {
   students: Student[]
   lessons: Lesson[]
   bookings: Booking[]
+  tacticBoards: TacticBoard[]
   loading: boolean
   error: string | null
   lessonsByStudent: (studentId: string) => Lesson[]
@@ -71,6 +91,9 @@ interface DataValue {
   createBooking: (input: NewBooking) => Promise<Result>
   updateBookingStatus: (id: string, status: BookingStatus) => Promise<Result>
   removeBooking: (id: string) => Promise<Result>
+  createTacticBoard: (input: NewTacticBoard) => Promise<TacticBoardCreateResult>
+  updateTacticBoard: (id: string, patch: TacticBoardPatch) => Promise<Result>
+  removeTacticBoard: (id: string) => Promise<Result>
 }
 
 const DataContext = createContext<DataValue | null>(null)
@@ -120,11 +143,37 @@ function mapBooking(row: BookingRow): Booking {
   }
 }
 
+interface TacticBoardRow {
+  id: string
+  teacher_id: string
+  title: string
+  notes: string | null
+  scene: TacticScene | null
+  created_at: string
+  updated_at: string
+}
+
+function mapTacticBoard(row: TacticBoardRow): TacticBoard {
+  const rawScene = row.scene ?? EMPTY_TACTIC_SCENE
+  return {
+    id: row.id,
+    teacherId: row.teacher_id,
+    title: row.title,
+    notes: row.notes ?? undefined,
+    scene: {
+      players: rawScene.players ?? [],
+      arrows: rawScene.arrows ?? [],
+      strokes: rawScene.strokes ?? [],
+    },
+  }
+}
+
 export function DataProvider({ children }: { children: ReactNode }) {
   const { profile } = useAuth()
   const [students, setStudents] = useState<Student[]>([])
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [tacticBoards, setTacticBoards] = useState<TacticBoard[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -133,22 +182,25 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setStudents([])
       setLessons([])
       setBookings([])
+      setTacticBoards([])
       return
     }
     setLoading(true)
     setError(null)
     try {
-      const [studentsRes, lessonsRes, bookingsRes] = await Promise.all([
+      const [studentsRes, lessonsRes, bookingsRes, boardsRes] = await Promise.all([
         supabase.from('students').select('*').order('name'),
         supabase
           .from('lessons')
           .select('*, evaluations(skill, score, comment)')
           .order('date'),
         supabase.from('bookings').select('*'),
+        supabase.from('tactic_boards').select('*').order('updated_at', { ascending: false }),
       ])
       if (studentsRes.error) throw studentsRes.error
       if (lessonsRes.error) throw lessonsRes.error
       if (bookingsRes.error) throw bookingsRes.error
+      if (boardsRes.error) throw boardsRes.error
 
       setStudents((studentsRes.data ?? []).map(mapStudent))
       setLessons(
@@ -157,6 +209,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         })[]).map(mapLesson)
       )
       setBookings((bookingsRes.data ?? []).map(mapBooking))
+      setTacticBoards((boardsRes.data ?? []).map(mapTacticBoard))
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Failed to load data'
       console.error('data fetch error', e)
@@ -301,11 +354,65 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return { error: null }
   }, [])
 
+  const createTacticBoard = useCallback(
+    async (input: NewTacticBoard): Promise<TacticBoardCreateResult> => {
+      if (!profile) return { error: 'Not authenticated' }
+      const { data, error } = await supabase
+        .from('tactic_boards')
+        .insert({
+          teacher_id: profile.id,
+          title: input.title.trim(),
+          notes: input.notes?.trim() || null,
+          scene: input.scene ?? EMPTY_TACTIC_SCENE,
+        })
+        .select()
+        .single()
+      if (error) return { error: error.message }
+      const board = mapTacticBoard(data as TacticBoardRow)
+      setTacticBoards((prev) => [board, ...prev])
+      return { error: null, id: board.id }
+    },
+    [profile]
+  )
+
+  const updateTacticBoard = useCallback(
+    async (id: string, patch: TacticBoardPatch): Promise<Result> => {
+      const { data, error } = await supabase
+        .from('tactic_boards')
+        .update({
+          ...(patch.title !== undefined ? { title: patch.title.trim() } : {}),
+          ...(patch.notes !== undefined
+            ? { notes: patch.notes ? patch.notes.trim() : null }
+            : {}),
+          ...(patch.scene !== undefined ? { scene: patch.scene } : {}),
+        })
+        .eq('id', id)
+        .select()
+        .single()
+      if (error) return { error: error.message }
+      const board = mapTacticBoard(data as TacticBoardRow)
+      setTacticBoards((prev) => {
+        const next = prev.map((b) => (b.id === id ? board : b))
+        return [...next].sort((a, b) => a.title.localeCompare(b.title))
+      })
+      return { error: null }
+    },
+    []
+  )
+
+  const removeTacticBoard = useCallback(async (id: string): Promise<Result> => {
+    const { error } = await supabase.from('tactic_boards').delete().eq('id', id)
+    if (error) return { error: error.message }
+    setTacticBoards((prev) => prev.filter((b) => b.id !== id))
+    return { error: null }
+  }, [])
+
   const value = useMemo<DataValue>(
     () => ({
       students,
       lessons,
       bookings,
+      tacticBoards,
       loading,
       error,
       lessonsByStudent: (studentId) =>
@@ -320,11 +427,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
       createBooking,
       updateBookingStatus,
       removeBooking,
+      createTacticBoard,
+      updateTacticBoard,
+      removeTacticBoard,
     }),
     [
       students,
       lessons,
       bookings,
+      tacticBoards,
       loading,
       error,
       refetch,
@@ -335,6 +446,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       createBooking,
       updateBookingStatus,
       removeBooking,
+      createTacticBoard,
+      updateTacticBoard,
+      removeTacticBoard,
     ]
   )
 

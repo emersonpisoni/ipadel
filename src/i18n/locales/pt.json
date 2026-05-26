@@ -81,6 +81,7 @@
     "students": "Alunos",
     "schedule": "Agenda",
     "evaluations": "Avaliações",
+    "tactics": "Táticas",
     "drills": "Drills",
     "finance": "Financeiro",
     "reports": "Relatórios",
@@ -218,6 +219,32 @@
   "placeholder": {
     "comingSoon": "Em breve",
     "underConstruction": "Esta seção ainda está em desenvolvimento."
+  },
+  "tactics": {
+    "title": "Pranchetas táticas",
+    "subtitle": "Crie diagramas da quadra para explicar posicionamento e movimentação.",
+    "newBoard": "Nova prancheta",
+    "emptyTitle": "Você ainda não tem pranchetas",
+    "emptyDescription": "Crie sua primeira prancheta para começar a desenhar jogadas.",
+    "untitled": "Sem título",
+    "boardTitle": "Título",
+    "boardTitlePlaceholder": "Ex: Saída pela parede defensiva",
+    "boardNotes": "Anotações",
+    "boardNotesPlaceholder": "Foco, contexto, instruções…",
+    "tools": {
+      "select": "Selecionar",
+      "addPlayerA": "Jogador A",
+      "addPlayerB": "Jogador B",
+      "arrowMovement": "Seta (movimento)",
+      "arrowBall": "Seta (bola)",
+      "pen": "Caneta",
+      "erase": "Apagar"
+    },
+    "saving": "Salvando…",
+    "saved": "Salvo",
+    "deleteConfirm": "Excluir esta prancheta?",
+    "clearScene": "Limpar tudo",
+    "lastEdited": "Editada em {{date}}"
   },
   "placeholders": {
     "drills": "Biblioteca de exercícios e drills personalizáveis.",
