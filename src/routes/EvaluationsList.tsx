@@ -64,21 +64,19 @@ function highlights(evaluations: Evaluation[]) {
 
 export default function EvaluationsList() {
   const { t } = useTranslation()
-  const { session } = useAuth()
-  const { lessons, students, studentsByTeacher } = useData()
+  const { profile } = useAuth()
+  const { lessons, students } = useData()
   const [studentFilter, setStudentFilter] = useState<string>(ALL)
 
-  const myStudents = session ? studentsByTeacher(session.userId) : []
-
   const filtered = useMemo(() => {
-    if (!session) return []
+    if (!profile) return []
     return lessons
-      .filter((l) => l.teacherId === session.userId)
+      .filter((l) => l.teacherId === profile.id)
       .filter((l) => studentFilter === ALL || l.studentId === studentFilter)
       .sort((a, b) => b.date.localeCompare(a.date))
-  }, [lessons, session, studentFilter])
+  }, [lessons, profile, studentFilter])
 
-  if (!session || session.role !== 'teacher') return null
+  if (!profile || profile.role !== 'teacher') return null
 
   return (
     <div className="space-y-6">
@@ -99,7 +97,7 @@ export default function EvaluationsList() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>{t('evaluations.allStudents')}</SelectItem>
-              {myStudents.map((s) => (
+              {students.map((s) => (
                 <SelectItem key={s.id} value={s.id}>
                   {s.name}
                 </SelectItem>

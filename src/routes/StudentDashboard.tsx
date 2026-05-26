@@ -9,17 +9,17 @@ import { SKILLS, type Skill } from '@/types'
 
 export default function StudentDashboard() {
   const { t } = useTranslation()
-  const { session } = useAuth()
+  const { profile } = useAuth()
   const { students, lessonsByStudent } = useData()
   const [filter, setFilter] = useState<Set<Skill>>(new Set(SKILLS))
 
-  const student = session ? students.find((s) => s.id === session.userId) : null
+  const student = profile ? students.find((s) => s.id === profile.id) : null
   const lessons = useMemo(
-    () => (session ? lessonsByStudent(session.userId) : []),
-    [session, lessonsByStudent]
+    () => (profile ? lessonsByStudent(profile.id) : []),
+    [profile, lessonsByStudent]
   )
 
-  if (!session || session.role !== 'student' || !student) return null
+  if (!profile || profile.role !== 'student' || !student) return null
 
   const last = lessons.length > 0 ? lessons[lessons.length - 1]! : null
   const lastAvg = last

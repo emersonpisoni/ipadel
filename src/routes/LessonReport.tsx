@@ -13,15 +13,15 @@ function barColor(score: number) {
 export default function LessonReport() {
   const { t } = useTranslation()
   const { lessonId } = useParams<{ lessonId: string }>()
-  const { session } = useAuth()
-  const { lessons, students, teachers } = useData()
+  const { profile } = useAuth()
+  const { lessons, students } = useData()
   const navigate = useNavigate()
 
   const lesson = lessons.find((l) => l.id === lessonId)
   const student = lesson ? students.find((s) => s.id === lesson.studentId) : null
-  const teacher = lesson ? teachers.find((p) => p.id === lesson.teacherId) : null
+  const teacher = profile
 
-  if (!session || session.role !== 'teacher') return null
+  if (!profile || profile.role !== 'teacher') return null
   if (!lesson || !student || !teacher) {
     return (
       <div className="min-h-screen bg-white p-8 text-zinc-900">

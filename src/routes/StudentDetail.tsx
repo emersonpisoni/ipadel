@@ -82,7 +82,7 @@ const scoresFromLastLesson = (
 export default function StudentDetail() {
   const { t } = useTranslation()
   const { studentId } = useParams<{ studentId: string }>()
-  const { session } = useAuth()
+  const { profile } = useAuth()
   const { students, lessonsByStudent, recordLesson } = useData()
 
   const student = students.find((s) => s.id === studentId)
@@ -102,7 +102,7 @@ export default function StudentDetail() {
     {} as Record<Skill, string>
   )
 
-  if (!session || session.role !== 'teacher') return null
+  if (!profile || profile.role !== 'teacher') return null
   if (!student || !studentId) {
     return (
       <div className="space-y-3">
@@ -114,19 +114,23 @@ export default function StudentDetail() {
     )
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const evaluations: Evaluation[] = SKILLS.map((s) => ({
       skill: s,
       score: scores[s],
       comment: comments[s]?.trim() || undefined,
     }))
-    recordLesson({
+    const result = await recordLesson({
       studentId,
-      teacherId: session.userId,
+      teacherId: profile.id,
       date,
       observations: observations.trim() || undefined,
       evaluations,
     })
+    if (result.error) {
+      console.error('recordLesson failed', result.error)
+      return
+    }
     setObservations('')
     setComments({} as Record<Skill, string>)
     setDate(today())

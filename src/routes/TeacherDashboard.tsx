@@ -48,13 +48,13 @@ const IDEAS: Idea[] = [
 
 export default function TeacherDashboard() {
   const { t } = useTranslation()
-  const { session } = useAuth()
-  const { lessons, students, studentsByTeacher } = useData()
+  const { profile } = useAuth()
+  const { lessons, students } = useData()
 
-  if (!session || session.role !== 'teacher') return null
+  if (!profile || profile.role !== 'teacher') return null
 
-  const myStudents = studentsByTeacher(session.userId)
-  const myLessons = lessons.filter((l) => l.teacherId === session.userId)
+  const myStudents = students
+  const myLessons = lessons
 
   const today = new Date()
   const lessonsThisMonth = myLessons.filter((l) => {

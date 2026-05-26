@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { CalendarPlus, Check, Trash2, X } from 'lucide-react'
@@ -75,11 +75,10 @@ function formatDate(iso: string, locale: string) {
 
 export default function Schedule() {
   const { t, i18n } = useTranslation()
-  const { session } = useAuth()
+  const { profile } = useAuth()
   const {
     students,
-    bookingsByTeacher,
-    studentsByTeacher,
+    bookings,
     createBooking,
     updateBookingStatus,
     removeBooking,
@@ -99,16 +98,10 @@ export default function Schedule() {
   const [formDuration, setFormDuration] = useState<number>(60)
   const [formObs, setFormObs] = useState('')
 
-  const myBookings = useMemo(
-    () => (session ? bookingsByTeacher(session.userId) : []),
-    [session, bookingsByTeacher]
-  )
-  const myStudents = useMemo(
-    () => (session ? studentsByTeacher(session.userId) : []),
-    [session, studentsByTeacher]
-  )
+  const myBookings = bookings
+  const myStudents = students
 
-  if (!session || session.role !== 'teacher') return null
+  if (!profile || profile.role !== 'teacher') return null
 
   const upcoming = [...myBookings]
     .filter((b) => b.status === 'scheduled' && b.date >= todayIso())
@@ -146,16 +139,20 @@ export default function Schedule() {
     setNewOpen(true)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formStudentId) return
-    createBooking({
+    const result = await createBooking({
       studentId: formStudentId,
-      teacherId: session.userId,
+      teacherId: profile.id,
       date: formDate,
       time: formTime,
       duration: formDuration,
       observations: formObs.trim() || undefined,
     })
+    if (result.error) {
+      console.error('createBooking failed', result.error)
+      return
+    }
     setNewOpen(false)
   }
 
@@ -333,9 +330,9 @@ export default function Schedule() {
                 <Button
                   variant="ghost"
                   className="w-full justify-start"
-                  onClick={() => {
+                  onClick={async () => {
                     if (!detail) return
-                    updateBookingStatus(detail.id, 'completed')
+                    await updateBookingStatus(detail.id, 'completed')
                     setDetailId(null)
                     navigate(`/teacher/students/${detail.studentId}`)
                   }}
@@ -346,9 +343,9 @@ export default function Schedule() {
                 <Button
                   variant="ghost"
                   className="w-full justify-start"
-                  onClick={() => {
+                  onClick={async () => {
                     if (!detail) return
-                    updateBookingStatus(detail.id, 'cancelled')
+                    await updateBookingStatus(detail.id, 'cancelled')
                     setDetailId(null)
                   }}
                 >
@@ -360,9 +357,9 @@ export default function Schedule() {
             <Button
               variant="ghost"
               className="w-full justify-start text-destructive hover:text-destructive"
-              onClick={() => {
+              onClick={async () => {
                 if (!detail) return
-                removeBooking(detail.id)
+                await removeBooking(detail.id)
                 setDetailId(null)
               }}
             >

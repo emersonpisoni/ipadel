@@ -13,6 +13,8 @@ export const SKILLS = [
 
 export type Skill = (typeof SKILLS)[number]
 
+export type StudentStatus = 'active' | 'paused' | 'inactive'
+
 export interface Teacher {
   id: string
   name: string
@@ -21,7 +23,10 @@ export interface Teacher {
 export interface Student {
   id: string
   name: string
+  email?: string
+  status: StudentStatus
   teacherId: string
+  linkedProfileId?: string
 }
 
 export interface Evaluation {
@@ -55,8 +60,3 @@ export interface Booking {
 export const DURATIONS = [30, 45, 60, 90] as const
 
 export type Role = 'teacher' | 'student'
-
-export interface Session {
-  role: Role
-  userId: string
-}
