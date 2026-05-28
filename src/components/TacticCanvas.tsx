@@ -1,11 +1,18 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ArrowUpRight,
   Eraser,
+  Maximize2,
+  Minimize2,
   MousePointer2,
   Pencil,
-  Plus,
   Target,
   Trash2,
 } from 'lucide-react'
@@ -18,14 +25,7 @@ import type {
   TacticStroke,
 } from '@/types'
 
-type Tool =
-  | 'select'
-  | 'addPlayerA'
-  | 'addPlayerB'
-  | 'arrowMovement'
-  | 'arrowBall'
-  | 'pen'
-  | 'erase'
+type Tool = 'select' | 'arrowMovement' | 'arrowBall' | 'pen' | 'erase'
 
 interface TacticCanvasProps {
   scene: TacticScene
@@ -49,8 +49,34 @@ function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(max, v))
 }
 
+type OrientationApi = {
+  lock?: (orientation: 'landscape' | 'portrait' | 'any') => Promise<void>
+  unlock?: () => void
+}
+
+async function tryLockLandscape() {
+  try {
+    const orientation = screen.orientation as unknown as OrientationApi | undefined
+    if (orientation?.lock) {
+      await orientation.lock('landscape')
+    }
+  } catch {
+    // best-effort: ignored on platforms that don't support it (e.g. iOS Safari)
+  }
+}
+
+function tryUnlockOrientation() {
+  try {
+    const orientation = screen.orientation as unknown as OrientationApi | undefined
+    orientation?.unlock?.()
+  } catch {
+    // ignored
+  }
+}
+
 export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
   const { t } = useTranslation()
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const [tool, setTool] = useState<Tool>('select')
   const [arrowStart, setArrowStart] = useState<{ x: number; y: number } | null>(null)
@@ -58,7 +84,78 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
   const [currentStroke, setCurrentStroke] = useState<{ x: number; y: number }[] | null>(
     null
   )
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isPortrait, setIsPortrait] = useState(false)
+  const [viewBoxSize, setViewBoxSize] = useState({ width: 200, height: 100 })
   const dragRef = useRef<{ id: string; dx: number; dy: number } | null>(null)
+
+  useEffect(() => {
+    const handler = () => {
+      const fs = !!document.fullscreenElement
+      setIsFullscreen(fs)
+      if (!fs) tryUnlockOrientation()
+    }
+    document.addEventListener('fullscreenchange', handler)
+    return () => document.removeEventListener('fullscreenchange', handler)
+  }, [])
+
+  useEffect(() => {
+    const update = () => setIsPortrait(window.innerHeight > window.innerWidth)
+    update()
+    window.addEventListener('resize', update)
+    window.addEventListener('orientationchange', update)
+    return () => {
+      window.removeEventListener('resize', update)
+      window.removeEventListener('orientationchange', update)
+    }
+  }, [])
+
+  const shouldRotate = isFullscreen && isPortrait
+
+  useEffect(() => {
+    const compute = () => {
+      if (!isFullscreen) {
+        setViewBoxSize({ width: 200, height: 100 })
+        return
+      }
+      const containerAspect = shouldRotate
+        ? window.innerHeight / window.innerWidth
+        : window.innerWidth / window.innerHeight
+      const COURT_W = 200
+      const COURT_H = 100
+      const courtAspect = COURT_W / COURT_H
+      if (containerAspect > courtAspect) {
+        setViewBoxSize({ width: COURT_H * containerAspect, height: COURT_H })
+      } else {
+        setViewBoxSize({ width: COURT_W, height: COURT_W / containerAspect })
+      }
+    }
+    compute()
+    window.addEventListener('resize', compute)
+    window.addEventListener('orientationchange', compute)
+    return () => {
+      window.removeEventListener('resize', compute)
+      window.removeEventListener('orientationchange', compute)
+    }
+  }, [isFullscreen, shouldRotate])
+
+  const courtOffsetX = (viewBoxSize.width - 200) / 2
+  const courtOffsetY = (viewBoxSize.height - 100) / 2
+
+  const toggleFullscreen = async () => {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen()
+      return
+    }
+    const el = wrapperRef.current
+    if (!el) return
+    try {
+      await el.requestFullscreen()
+      void tryLockLandscape()
+    } catch (e) {
+      console.error('fullscreen failed', e)
+    }
+  }
 
   const clientToSvg = (clientX: number, clientY: number) => {
     const svg = svgRef.current
@@ -69,21 +166,15 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
     const ctm = svg.getScreenCTM()
     if (!ctm) return { x: 0, y: 0 }
     const p = pt.matrixTransform(ctm.inverse())
-    return { x: clamp(p.x, 0, 200), y: clamp(p.y, 0, 100) }
+    return {
+      x: clamp(p.x - courtOffsetX, 0, 200),
+      y: clamp(p.y - courtOffsetY, 0, 100),
+    }
   }
 
   const handleCourtPointerDown = (e: ReactPointerEvent<SVGSVGElement>) => {
     if (dragRef.current) return
     const { x, y } = clientToSvg(e.clientX, e.clientY)
-
-    if (tool === 'addPlayerA' || tool === 'addPlayerB') {
-      const team = tool === 'addPlayerA' ? 'A' : 'B'
-      onChange({
-        ...scene,
-        players: [...scene.players, { id: newId(), x, y, team }],
-      })
-      return
-    }
 
     if (tool === 'arrowMovement' || tool === 'arrowBall') {
       const kind = tool === 'arrowMovement' ? 'movement' : 'ball'
@@ -158,15 +249,8 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
     e: ReactPointerEvent<SVGGElement>,
     player: TacticPlayer
   ) => {
-    if (tool === 'erase') {
-      e.stopPropagation()
-      onChange({
-        ...scene,
-        players: scene.players.filter((p) => p.id !== player.id),
-      })
-      return
-    }
-    if (tool === 'pen') {
+    if (tool === 'erase' || tool === 'pen') {
+      // erase doesn't apply to default players; pen ignores players
       return
     }
     e.stopPropagation()
@@ -201,15 +285,14 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
     }
   }
 
-  const clearAll = () => {
-    onChange({ players: [], arrows: [], strokes: [] })
+  const clearDrawings = () => {
+    onChange({ ...scene, arrows: [], strokes: [] })
     setArrowStart(null)
     setCursor(null)
     setCurrentStroke(null)
   }
 
-  const hasContent =
-    scene.players.length > 0 || scene.arrows.length > 0 || scene.strokes.length > 0
+  const hasDrawings = scene.arrows.length > 0 || scene.strokes.length > 0
 
   const cursorClass =
     tool === 'pen'
@@ -218,95 +301,94 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
         ? 'cursor-crosshair'
         : tool === 'arrowMovement' || tool === 'arrowBall'
           ? 'cursor-crosshair'
-          : tool === 'addPlayerA' || tool === 'addPlayerB'
-            ? 'cursor-copy'
-            : 'cursor-default'
+          : 'cursor-default'
 
   const pointsToStr = (pts: { x: number; y: number }[]) =>
     pts.map((p) => `${p.x},${p.y}`).join(' ')
 
-  return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <ToolButton
-          active={tool === 'select'}
-          onClick={() => setTool('select')}
-          icon={MousePointer2}
-          label={t('tactics.tools.select')}
-        />
-        <ToolButton
-          active={tool === 'addPlayerA'}
-          onClick={() => setTool('addPlayerA')}
-          icon={Plus}
-          label={t('tactics.tools.addPlayerA')}
-          dotColor={PLAYER_A_COLOR}
-        />
-        <ToolButton
-          active={tool === 'addPlayerB'}
-          onClick={() => setTool('addPlayerB')}
-          icon={Plus}
-          label={t('tactics.tools.addPlayerB')}
-          dotColor={PLAYER_B_COLOR}
-        />
-        <ToolButton
-          active={tool === 'arrowMovement'}
-          onClick={() => {
-            setTool('arrowMovement')
-            setArrowStart(null)
-          }}
-          icon={ArrowUpRight}
-          label={t('tactics.tools.arrowMovement')}
-        />
-        <ToolButton
-          active={tool === 'arrowBall'}
-          onClick={() => {
-            setTool('arrowBall')
-            setArrowStart(null)
-          }}
-          icon={Target}
-          label={t('tactics.tools.arrowBall')}
-        />
-        <ToolButton
-          active={tool === 'pen'}
-          onClick={() => {
-            setTool('pen')
-            setArrowStart(null)
-          }}
-          icon={Pencil}
-          label={t('tactics.tools.pen')}
-          dotColor={PEN_COLOR}
-        />
-        <ToolButton
-          active={tool === 'erase'}
-          onClick={() => setTool('erase')}
-          icon={Eraser}
-          label={t('tactics.tools.erase')}
-        />
-        <div className="ml-auto">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            disabled={!hasContent}
-            onClick={clearAll}
-          >
-            <Trash2 className="size-4" />
-            {t('tactics.clearScene')}
-          </Button>
-        </div>
+  const toolbarElement = (
+    <div className="flex flex-wrap items-center gap-2">
+      <ToolButton
+        active={tool === 'select'}
+        onClick={() => setTool('select')}
+        icon={MousePointer2}
+        label={t('tactics.tools.select')}
+      />
+      <ToolButton
+        active={tool === 'arrowMovement'}
+        onClick={() => {
+          setTool('arrowMovement')
+          setArrowStart(null)
+        }}
+        icon={ArrowUpRight}
+        label={t('tactics.tools.arrowMovement')}
+      />
+      <ToolButton
+        active={tool === 'arrowBall'}
+        onClick={() => {
+          setTool('arrowBall')
+          setArrowStart(null)
+        }}
+        icon={Target}
+        label={t('tactics.tools.arrowBall')}
+      />
+      <ToolButton
+        active={tool === 'pen'}
+        onClick={() => {
+          setTool('pen')
+          setArrowStart(null)
+        }}
+        icon={Pencil}
+        label={t('tactics.tools.pen')}
+        dotColor={PEN_COLOR}
+      />
+      <ToolButton
+        active={tool === 'erase'}
+        onClick={() => setTool('erase')}
+        icon={Eraser}
+        label={t('tactics.tools.erase')}
+      />
+      <div className="ml-auto flex items-center gap-1">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={!hasDrawings}
+          onClick={clearDrawings}
+        >
+          <Trash2 className="size-4" />
+          <span className="hidden sm:inline">{t('tactics.clearScene')}</span>
+        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={toggleFullscreen}>
+          {isFullscreen ? (
+            <Minimize2 className="size-4" />
+          ) : (
+            <Maximize2 className="size-4" />
+          )}
+          <span className="hidden sm:inline">
+            {isFullscreen ? t('tactics.exitFullscreen') : t('tactics.fullscreen')}
+          </span>
+        </Button>
       </div>
+    </div>
+  )
 
-      <div className="overflow-hidden rounded-lg ring-1 ring-border">
+  const svgElement = (
         <svg
           ref={svgRef}
-          viewBox="0 0 200 100"
+          viewBox={`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`}
           xmlns="http://www.w3.org/2000/svg"
           onPointerDown={handleCourtPointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerLeave={handlePointerUp}
-          className={cn('block w-full touch-none select-none', cursorClass)}
-          style={{ aspectRatio: '2 / 1' }}
+          preserveAspectRatio="xMidYMid meet"
+          className={cn(
+            'block touch-none select-none',
+            cursorClass,
+            isFullscreen ? 'h-full w-full' : 'w-full'
+          )}
+          style={isFullscreen ? undefined : { aspectRatio: '2 / 1' }}
         >
           <defs>
             <marker
@@ -333,31 +415,32 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
             </marker>
           </defs>
 
-          <rect width="200" height="100" fill="#1f6b51" />
+          <g transform={`translate(${courtOffsetX} ${courtOffsetY})`}>
+            <rect width={200} height={100} fill="#1f6b51" />
 
-          <g pointerEvents="none">
-            <rect
-              x={1}
-              y={1}
-              width={198}
-              height={98}
-              fill="none"
-              stroke="white"
-              strokeWidth={0.6}
-            />
-            <line x1={30} y1={1} x2={30} y2={99} stroke="white" strokeWidth={0.5} />
-            <line x1={170} y1={1} x2={170} y2={99} stroke="white" strokeWidth={0.5} />
-            <line x1={30} y1={50} x2={170} y2={50} stroke="white" strokeWidth={0.5} />
-            <line
-              x1={100}
-              y1={0}
-              x2={100}
-              y2={100}
-              stroke="white"
-              strokeWidth={1.2}
-              strokeDasharray="2 1.2"
-            />
-          </g>
+            <g pointerEvents="none">
+              <rect
+                x={1}
+                y={1}
+                width={198}
+                height={98}
+                fill="none"
+                stroke="white"
+                strokeWidth={0.6}
+              />
+              <line x1={30} y1={1} x2={30} y2={99} stroke="white" strokeWidth={0.5} />
+              <line x1={170} y1={1} x2={170} y2={99} stroke="white" strokeWidth={0.5} />
+              <line x1={30} y1={50} x2={170} y2={50} stroke="white" strokeWidth={0.5} />
+              <line
+                x1={100}
+                y1={0}
+                x2={100}
+                y2={100}
+                stroke="white"
+                strokeWidth={1.2}
+                strokeDasharray="2 1.2"
+              />
+            </g>
 
           {scene.strokes.map((s) => (
             <polyline
@@ -402,11 +485,7 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
               onPointerDown={(e) => handlePlayerPointerDown(e, p)}
               style={{
                 cursor:
-                  tool === 'erase'
-                    ? 'pointer'
-                    : tool === 'pen'
-                      ? 'crosshair'
-                      : 'grab',
+                  tool === 'erase' || tool === 'pen' ? 'default' : 'grab',
               }}
             >
               <circle
@@ -460,9 +539,74 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
               pointerEvents="none"
             />
           )}
+          </g>
         </svg>
-      </div>
+  )
+
+  return (
+    <div
+      ref={wrapperRef}
+      className={cn(
+        !isFullscreen && 'space-y-3',
+        isFullscreen &&
+          'flex h-full w-full items-center justify-center bg-background'
+      )}
+    >
+      <FullscreenFrame
+        isFullscreen={isFullscreen}
+        shouldRotate={shouldRotate}
+        toolbar={toolbarElement}
+        svg={svgElement}
+      />
     </div>
+  )
+}
+
+interface FullscreenFrameProps {
+  isFullscreen: boolean
+  shouldRotate: boolean
+  toolbar: ReactNode
+  svg: ReactNode
+}
+
+function FullscreenFrame({
+  isFullscreen,
+  shouldRotate,
+  toolbar,
+  svg,
+}: FullscreenFrameProps) {
+  if (shouldRotate) {
+    return (
+      <div
+        style={{
+          width: '100vh',
+          height: '100vw',
+          transform: 'rotate(90deg)',
+          position: 'relative',
+        }}
+      >
+        <div className="absolute inset-0">{svg}</div>
+        <div className="absolute inset-x-2 top-2 z-10 rounded-md bg-background/70 px-2 py-1 backdrop-blur-sm">
+          {toolbar}
+        </div>
+      </div>
+    )
+  }
+  if (isFullscreen) {
+    return (
+      <div className="relative h-full w-full">
+        <div className="absolute inset-0">{svg}</div>
+        <div className="absolute inset-x-2 top-2 z-10 rounded-md bg-background/70 px-2 py-1 backdrop-blur-sm">
+          {toolbar}
+        </div>
+      </div>
+    )
+  }
+  return (
+    <>
+      {toolbar}
+      <div className="overflow-hidden rounded-lg ring-1 ring-border">{svg}</div>
+    </>
   )
 }
 

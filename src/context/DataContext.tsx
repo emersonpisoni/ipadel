@@ -17,6 +17,7 @@ import type {
 import { supabase } from '@/lib/supabase'
 import {
   EMPTY_TACTIC_SCENE,
+  INITIAL_TACTIC_SCENE,
   type Booking,
   type BookingStatus,
   type Evaluation,
@@ -363,7 +364,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           teacher_id: profile.id,
           title: input.title.trim(),
           notes: input.notes?.trim() || null,
-          scene: input.scene ?? EMPTY_TACTIC_SCENE,
+          scene: input.scene ?? INITIAL_TACTIC_SCENE,
         })
         .select()
         .single()

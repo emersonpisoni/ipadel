@@ -105,3 +105,16 @@ export const EMPTY_TACTIC_SCENE: TacticScene = {
   arrows: [],
   strokes: [],
 }
+
+export const INITIAL_PLAYERS: TacticPlayer[] = [
+  { id: 'a1', x: 50, y: 30, team: 'A' },
+  { id: 'a2', x: 50, y: 70, team: 'A' },
+  { id: 'b1', x: 150, y: 30, team: 'B' },
+  { id: 'b2', x: 150, y: 70, team: 'B' },
+]
+
+export const INITIAL_TACTIC_SCENE: TacticScene = {
+  players: INITIAL_PLAYERS,
+  arrows: [],
+  strokes: [],
+}

@@ -243,7 +243,9 @@
     "saving": "Saving…",
     "saved": "Saved",
     "deleteConfirm": "Delete this board?",
-    "clearScene": "Clear all",
+    "clearScene": "Clear drawings",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
     "lastEdited": "Edited on {{date}}"
   },
   "placeholders": {

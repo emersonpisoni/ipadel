@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
-import { EMPTY_TACTIC_SCENE, type TacticScene } from '@/types'
+import { EMPTY_TACTIC_SCENE, INITIAL_PLAYERS, type TacticScene } from '@/types'
 
 export default function TacticBoardEditor() {
   const { t } = useTranslation()
@@ -32,7 +32,11 @@ export default function TacticBoardEditor() {
     if (!board) return
     setTitle(board.title)
     setNotes(board.notes ?? '')
-    setScene(board.scene)
+    setScene({
+      players: board.scene.players.length > 0 ? board.scene.players : INITIAL_PLAYERS,
+      arrows: board.scene.arrows,
+      strokes: board.scene.strokes,
+    })
     setDirty(false)
   }, [board?.id, board?.title, board?.notes, board?.scene])
 

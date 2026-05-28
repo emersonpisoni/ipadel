@@ -243,7 +243,9 @@
     "saving": "Guardando…",
     "saved": "Guardado",
     "deleteConfirm": "¿Eliminar esta pizarra?",
-    "clearScene": "Limpiar todo",
+    "clearScene": "Limpiar dibujos",
+    "fullscreen": "Pantalla completa",
+    "exitFullscreen": "Salir de pantalla completa",
     "lastEdited": "Editada el {{date}}"
   },
   "placeholders": {

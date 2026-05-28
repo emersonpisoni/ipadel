@@ -243,7 +243,9 @@
     "saving": "Salvando…",
     "saved": "Salvo",
     "deleteConfirm": "Excluir esta prancheta?",
-    "clearScene": "Limpar tudo",
+    "clearScene": "Limpar desenhos",
+    "fullscreen": "Tela cheia",
+    "exitFullscreen": "Sair da tela cheia",
     "lastEdited": "Editada em {{date}}"
   },
   "placeholders": {
