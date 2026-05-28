@@ -416,7 +416,7 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
           </defs>
 
           <g transform={`translate(${courtOffsetX} ${courtOffsetY})`}>
-            <rect width={200} height={100} fill="#1f6b51" />
+            <rect width={200} height={100} fill="#000" />
 
             <g pointerEvents="none">
               <rect
@@ -549,7 +549,7 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
       className={cn(
         !isFullscreen && 'space-y-3',
         isFullscreen &&
-          'flex h-full w-full items-center justify-center bg-background'
+          'flex h-full w-full justify-center bg-background'
       )}
     >
       <FullscreenFrame
@@ -585,7 +585,7 @@ function FullscreenFrame({
           position: 'relative',
         }}
       >
-        <div className="absolute inset-0">{svg}</div>
+        <div className="absolute inset-0 w-dvh">{svg}</div>
         <div className="absolute inset-x-2 top-2 z-10 rounded-md bg-background/70 px-2 py-1 backdrop-blur-sm">
           {toolbar}
         </div>
@@ -595,7 +595,7 @@ function FullscreenFrame({
   if (isFullscreen) {
     return (
       <div className="relative h-full w-full">
-        <div className="absolute inset-0">{svg}</div>
+        <div className="absolute inset-0 w-dvh">{svg}</div>
         <div className="absolute inset-x-2 top-2 z-10 rounded-md bg-background/70 px-2 py-1 backdrop-blur-sm">
           {toolbar}
         </div>
