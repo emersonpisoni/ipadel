@@ -23,7 +23,7 @@ export default function FullscreenFrame({
           position: 'relative',
         }}
       >
-        <div className="absolute inset-0 w-dvh">{svg}</div>
+        <div className="absolute inset-0">{svg}</div>
         <div className="absolute inset-x-2 top-2 z-10 rounded-md bg-background/70 px-2 py-1 backdrop-blur-sm">
           {toolbar}
         </div>
@@ -33,7 +33,7 @@ export default function FullscreenFrame({
   if (isFullscreen) {
     return (
       <div className="relative h-full w-full">
-        <div className="absolute inset-0 w-dvh">{svg}</div>
+        <div className="absolute inset-0">{svg}</div>
         <div className="absolute inset-x-2 top-2 z-10 rounded-md bg-background/70 px-2 py-1 backdrop-blur-sm">
           {toolbar}
         </div>

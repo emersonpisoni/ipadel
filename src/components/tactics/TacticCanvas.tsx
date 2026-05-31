@@ -49,6 +49,7 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null)
   const [currentStroke, setCurrentStroke] = useState<{ x: number; y: number }[] | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isCssFullscreen, setIsCssFullscreen] = useState(false)
   const [isPortrait, setIsPortrait] = useState(false)
   const [viewBoxSize, setViewBoxSize] = useState({ width: 200, height: 100 })
   const dragRef = useRef<{ id: string; dx: number; dy: number } | null>(null)
@@ -74,11 +75,12 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
     }
   }, [])
 
-  const shouldRotate = isFullscreen && isPortrait
+  const effectiveFullscreen = isFullscreen || isCssFullscreen
+  const shouldRotate = effectiveFullscreen && isPortrait
 
   useEffect(() => {
     const compute = () => {
-      if (!isFullscreen) {
+      if (!effectiveFullscreen) {
         setViewBoxSize({ width: 200, height: 100 })
         return
       }
@@ -101,12 +103,17 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
       window.removeEventListener('resize', compute)
       window.removeEventListener('orientationchange', compute)
     }
-  }, [isFullscreen, shouldRotate])
+  }, [effectiveFullscreen, shouldRotate])
 
   const courtOffsetX = (viewBoxSize.width - 200) / 2
   const courtOffsetY = (viewBoxSize.height - 100) / 2
 
   const toggleFullscreen = async () => {
+    if (isCssFullscreen) {
+      setIsCssFullscreen(false)
+      tryUnlockOrientation()
+      return
+    }
     if (document.fullscreenElement) {
       await document.exitFullscreen()
       return
@@ -116,8 +123,9 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
     try {
       await el.requestFullscreen()
       void tryLockLandscape()
-    } catch (e) {
-      console.error('fullscreen failed', e)
+    } catch {
+      setIsCssFullscreen(true)
+      void tryLockLandscape()
     }
   }
 
@@ -291,9 +299,9 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
           <span className="hidden sm:inline">{t('tactics.clearScene')}</span>
         </Button>
         <Button type="button" variant="ghost" size="sm" onClick={toggleFullscreen}>
-          {isFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
+          {effectiveFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
           <span className="hidden sm:inline">
-            {isFullscreen ? t('tactics.exitFullscreen') : t('tactics.fullscreen')}
+            {effectiveFullscreen ? t('tactics.exitFullscreen') : t('tactics.fullscreen')}
           </span>
         </Button>
       </div>
@@ -313,9 +321,9 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
       className={cn(
         'block touch-none select-none',
         cursorClass,
-        isFullscreen ? 'h-full w-full' : 'w-full'
+        effectiveFullscreen ? 'h-full w-full' : 'w-full'
       )}
-      style={isFullscreen ? undefined : { aspectRatio: '2 / 1' }}
+      style={effectiveFullscreen ? undefined : { aspectRatio: '2 / 1' }}
     >
       <defs>
         <marker
@@ -461,8 +469,9 @@ export default function TacticCanvas({ scene, onChange }: TacticCanvasProps) {
     <div
       ref={wrapperRef}
       className={cn(
-        !isFullscreen && 'space-y-3',
-        isFullscreen && 'flex h-full w-full justify-center bg-background'
+        !effectiveFullscreen && 'space-y-3',
+        effectiveFullscreen && 'flex h-full w-full justify-center bg-background',
+        isCssFullscreen && 'fixed inset-0 z-50'
       )}
     >
       <FullscreenFrame
