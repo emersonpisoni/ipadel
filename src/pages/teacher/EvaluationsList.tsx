@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, FileText } from 'lucide-react'
-import IdeasButton, { type Idea } from '@/components/IdeasButton'
+import IdeasButton, { type Idea } from '@/components/shared/IdeasButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -56,10 +56,7 @@ function colorForScore(score: number) {
 function highlights(evaluations: Evaluation[]) {
   if (evaluations.length === 0) return null
   const sorted = [...evaluations].sort((a, b) => b.score - a.score)
-  return {
-    best: sorted[0]!,
-    worst: sorted[sorted.length - 1]!,
-  }
+  return { best: sorted[0]!, worst: sorted[sorted.length - 1]! }
 }
 
 export default function EvaluationsList() {
@@ -121,8 +118,7 @@ export default function EvaluationsList() {
           {filtered.map((lesson) => {
             const student = students.find((s) => s.id === lesson.studentId)
             const avg =
-              lesson.evaluations.reduce((s, e) => s + e.score, 0) /
-              lesson.evaluations.length
+              lesson.evaluations.reduce((s, e) => s + e.score, 0) / lesson.evaluations.length
             const hl = highlights(lesson.evaluations)
             return (
               <Card key={lesson.id}>
@@ -144,14 +140,10 @@ export default function EvaluationsList() {
 
                   {hl && (
                     <div className="flex flex-wrap gap-2 text-xs">
-                      <span
-                        className={`rounded-full border px-2 py-0.5 ${colorForScore(hl.best.score)}`}
-                      >
+                      <span className={`rounded-full border px-2 py-0.5 ${colorForScore(hl.best.score)}`}>
                         ↑ {t(`skills.${hl.best.skill}`)} {hl.best.score}
                       </span>
-                      <span
-                        className={`rounded-full border px-2 py-0.5 ${colorForScore(hl.worst.score)}`}
-                      >
+                      <span className={`rounded-full border px-2 py-0.5 ${colorForScore(hl.worst.score)}`}>
                         ↓ {t(`skills.${hl.worst.skill}`)} {hl.worst.score}
                       </span>
                     </div>

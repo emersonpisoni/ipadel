@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, ClipboardList, Plus, Users } from 'lucide-react'
-import IdeasButton, { type Idea } from '@/components/IdeasButton'
+import IdeasButton, { type Idea } from '@/components/shared/IdeasButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/context/AuthContext'

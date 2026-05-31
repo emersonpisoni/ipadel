@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Loader2, Save, Trash2 } from 'lucide-react'
-import TacticCanvas from '@/components/TacticCanvas'
+import TacticCanvas from '@/components/tactics/TacticCanvas'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -97,10 +97,7 @@ export default function TacticBoardEditor() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Input
             value={title}
-            onChange={(e) => {
-              setTitle(e.target.value)
-              markDirty()
-            }}
+            onChange={(e) => { setTitle(e.target.value); markDirty() }}
             placeholder={t('tactics.boardTitlePlaceholder')}
             className="h-11 max-w-md border-0 bg-transparent px-0 text-2xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
           />
@@ -109,11 +106,7 @@ export default function TacticBoardEditor() {
               <span className="text-xs text-muted-foreground">{t('tactics.saved')}</span>
             )}
             <Button onClick={handleSave} disabled={saving || !dirty}>
-              {saving ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Save className="size-4" />
-              )}
+              {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
               {saving ? t('tactics.saving') : t('common.save')}
             </Button>
           </div>
@@ -124,10 +117,7 @@ export default function TacticBoardEditor() {
         <CardContent className="py-4">
           <TacticCanvas
             scene={scene}
-            onChange={(next) => {
-              setScene(next)
-              markDirty()
-            }}
+            onChange={(next) => { setScene(next); markDirty() }}
           />
         </CardContent>
       </Card>
@@ -140,10 +130,7 @@ export default function TacticBoardEditor() {
               id="board-notes"
               rows={3}
               value={notes}
-              onChange={(e) => {
-                setNotes(e.target.value)
-                markDirty()
-              }}
+              onChange={(e) => { setNotes(e.target.value); markDirty() }}
               placeholder={t('tactics.boardNotesPlaceholder')}
             />
           </div>

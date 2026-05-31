@@ -72,9 +72,7 @@ export default function TacticsList() {
             </div>
             <div>
               <div className="font-medium">{t('tactics.emptyTitle')}</div>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {t('tactics.emptyDescription')}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{t('tactics.emptyDescription')}</p>
             </div>
             <Button onClick={() => setDialogOpen(true)} className="mt-1">
               <Plus className="size-4" />
@@ -93,9 +91,7 @@ export default function TacticsList() {
                     <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                   </div>
                   {board.notes && (
-                    <p className="line-clamp-2 text-xs text-muted-foreground">
-                      {board.notes}
-                    </p>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">{board.notes}</p>
                   )}
                   <div className="mt-auto pt-2 text-xs text-muted-foreground">
                     {board.scene.players.length} · {board.scene.arrows.length} →
@@ -109,13 +105,7 @@ export default function TacticsList() {
 
       <Dialog
         open={dialogOpen}
-        onOpenChange={(o) => {
-          setDialogOpen(o)
-          if (!o) {
-            setTitle('')
-            setError(null)
-          }
-        }}
+        onOpenChange={(o) => { setDialogOpen(o); if (!o) { setTitle(''); setError(null) } }}
       >
         <DialogContent>
           <DialogHeader>
@@ -153,4 +143,3 @@ export default function TacticsList() {
     </div>
   )
 }
-

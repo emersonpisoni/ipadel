@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
-import ThemeToggle from '@/components/ThemeToggle'
+import LanguageSwitcher from '@/components/shared/LanguageSwitcher'
+import ThemeToggle from '@/components/shared/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/context/AuthContext'
 

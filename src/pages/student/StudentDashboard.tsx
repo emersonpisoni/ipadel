@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import EvolutionChart from '@/components/EvolutionChart'
+import EvolutionChart from '@/components/shared/EvolutionChart'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/context/AuthContext'
@@ -44,20 +44,14 @@ export default function StudentDashboard() {
       <div className="grid gap-3 sm:grid-cols-2">
         <Card>
           <CardContent className="py-4">
-            <div className="text-xs text-muted-foreground">
-              {t('studentDashboard.lessons')}
-            </div>
+            <div className="text-xs text-muted-foreground">{t('studentDashboard.lessons')}</div>
             <div className="text-3xl font-bold">{lessons.length}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="py-4">
-            <div className="text-xs text-muted-foreground">
-              {t('studentDashboard.lastAverage')}
-            </div>
-            <div className="text-3xl font-bold">
-              {lastAvg ? lastAvg.toFixed(1) : '—'}
-            </div>
+            <div className="text-xs text-muted-foreground">{t('studentDashboard.lastAverage')}</div>
+            <div className="text-3xl font-bold">{lastAvg ? lastAvg.toFixed(1) : '—'}</div>
           </CardContent>
         </Card>
       </div>
@@ -92,14 +86,11 @@ export default function StudentDashboard() {
         </CardHeader>
         <CardContent className="space-y-2">
           {lessons.length === 0 && (
-            <p className="text-sm text-muted-foreground">
-              {t('studentDashboard.noLessons')}
-            </p>
+            <p className="text-sm text-muted-foreground">{t('studentDashboard.noLessons')}</p>
           )}
           {[...lessons].reverse().map((lesson) => {
             const avg =
-              lesson.evaluations.reduce((s, e) => s + e.score, 0) /
-              lesson.evaluations.length
+              lesson.evaluations.reduce((s, e) => s + e.score, 0) / lesson.evaluations.length
             return (
               <Card key={lesson.id} className="bg-muted/30">
                 <CardContent className="p-3">
@@ -110,9 +101,7 @@ export default function StudentDashboard() {
                     </span>
                   </div>
                   {lesson.observations && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {lesson.observations}
-                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">{lesson.observations}</p>
                   )}
                 </CardContent>
               </Card>

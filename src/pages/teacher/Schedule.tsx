@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { CalendarPlus, Check, Trash2, X } from 'lucide-react'
-import IdeasButton, { type Idea } from '@/components/IdeasButton'
-import MonthCalendar from '@/components/MonthCalendar'
+import IdeasButton, { type Idea } from '@/components/shared/IdeasButton'
+import MonthCalendar from '@/components/shared/MonthCalendar'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -76,13 +76,7 @@ function formatDate(iso: string, locale: string) {
 export default function Schedule() {
   const { t, i18n } = useTranslation()
   const { profile } = useAuth()
-  const {
-    students,
-    bookings,
-    createBooking,
-    updateBookingStatus,
-    removeBooking,
-  } = useData()
+  const { students, bookings, createBooking, updateBookingStatus, removeBooking } = useData()
   const navigate = useNavigate()
 
   const today = new Date()
@@ -98,41 +92,25 @@ export default function Schedule() {
   const [formDuration, setFormDuration] = useState<number>(60)
   const [formObs, setFormObs] = useState('')
 
-  const myBookings = bookings
-  const myStudents = students
-
   if (!profile || profile.role !== 'teacher') return null
 
-  const upcoming = [...myBookings]
+  const upcoming = [...bookings]
     .filter((b) => b.status === 'scheduled' && b.date >= todayIso())
-    .sort(
-      (a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)
-    )
+    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
     .slice(0, 5)
 
   const goTo = (delta: number) => {
     let nextMonth = month + delta
     let nextYear = year
-    if (nextMonth < 0) {
-      nextMonth = 11
-      nextYear -= 1
-    } else if (nextMonth > 11) {
-      nextMonth = 0
-      nextYear += 1
-    }
+    if (nextMonth < 0) { nextMonth = 11; nextYear -= 1 }
+    else if (nextMonth > 11) { nextMonth = 0; nextYear += 1 }
     setMonth(nextMonth)
     setYear(nextYear)
   }
 
-  const goToToday = () => {
-    const d = new Date()
-    setYear(d.getFullYear())
-    setMonth(d.getMonth())
-  }
-
   const openNew = (dateIso?: string) => {
     setFormDate(dateIso ?? todayIso())
-    setFormStudentId(myStudents[0]?.id ?? '')
+    setFormStudentId(students[0]?.id ?? '')
     setFormTime('19:00')
     setFormDuration(60)
     setFormObs('')
@@ -156,12 +134,12 @@ export default function Schedule() {
     setNewOpen(false)
   }
 
-  const detail = myBookings.find((b) => b.id === detailId) ?? null
-  const detailStudent = detail
-    ? students.find((s) => s.id === detail.studentId)
-    : null
-
-  const locale = i18n.resolvedLanguage === 'en' ? 'en-US' : i18n.resolvedLanguage === 'es' ? 'es-ES' : 'pt-BR'
+  const detail = bookings.find((b) => b.id === detailId) ?? null
+  const detailStudent = detail ? students.find((s) => s.id === detail.studentId) : null
+  const locale =
+    i18n.resolvedLanguage === 'en' ? 'en-US'
+    : i18n.resolvedLanguage === 'es' ? 'es-ES'
+    : 'pt-BR'
 
   return (
     <div className="space-y-6">
@@ -183,11 +161,11 @@ export default function Schedule() {
         <MonthCalendar
           year={year}
           month={month}
-          bookings={myBookings}
+          bookings={bookings}
           students={students}
           onPrev={() => goTo(-1)}
           onNext={() => goTo(1)}
-          onToday={goToToday}
+          onToday={() => { setYear(new Date().getFullYear()); setMonth(new Date().getMonth()) }}
           onDayClick={openNew}
           onEventClick={(b) => setDetailId(b.id)}
         />
@@ -240,10 +218,8 @@ export default function Schedule() {
                   <SelectValue placeholder={t('schedule.selectStudent')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {myStudents.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      {s.name}
-                    </SelectItem>
+                  {students.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -251,29 +227,16 @@ export default function Schedule() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label htmlFor="b-date">{t('schedule.date')}</Label>
-                <Input
-                  id="b-date"
-                  type="date"
-                  value={formDate}
-                  onChange={(e) => setFormDate(e.target.value)}
-                />
+                <Input id="b-date" type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="b-time">{t('schedule.time')}</Label>
-                <Input
-                  id="b-time"
-                  type="time"
-                  value={formTime}
-                  onChange={(e) => setFormTime(e.target.value)}
-                />
+                <Input id="b-time" type="time" value={formTime} onChange={(e) => setFormTime(e.target.value)} />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="b-duration">{t('schedule.duration')}</Label>
-              <Select
-                value={String(formDuration)}
-                onValueChange={(v) => setFormDuration(Number(v))}
-              >
+              <Select value={String(formDuration)} onValueChange={(v) => setFormDuration(Number(v))}>
                 <SelectTrigger id="b-duration" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
@@ -298,20 +261,13 @@ export default function Schedule() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setNewOpen(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSave} disabled={!formStudentId}>
-              {t('common.save')}
-            </Button>
+            <Button variant="outline" onClick={() => setNewOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={handleSave} disabled={!formStudentId}>{t('common.save')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={detail !== null}
-        onOpenChange={(open) => !open && setDetailId(null)}
-      >
+      <Dialog open={detail !== null} onOpenChange={(open) => !open && setDetailId(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{detailStudent?.name ?? '—'}</DialogTitle>

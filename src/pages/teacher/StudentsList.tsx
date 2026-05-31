@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ChevronRight, Loader2, Plus, Users } from 'lucide-react'
-import IdeasButton, { type Idea } from '@/components/IdeasButton'
+import IdeasButton, { type Idea } from '@/components/shared/IdeasButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -69,10 +69,7 @@ function NewStudentDialog({
     e.preventDefault()
     setError(null)
     setSaving(true)
-    const result = await createStudent({
-      name,
-      email: email.trim() || undefined,
-    })
+    const result = await createStudent({ name, email: email.trim() || undefined })
     setSaving(false)
     if (result.error) {
       setError(result.error)
@@ -83,13 +80,7 @@ function NewStudentDialog({
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(o) => {
-        if (!o) reset()
-        onOpenChange(o)
-      }}
-    >
+    <Dialog open={open} onOpenChange={(o) => { if (!o) reset(); onOpenChange(o) }}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t('students.newStudentTitle')}</DialogTitle>
@@ -113,9 +104,7 @@ function NewStudentDialog({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <p className="text-xs text-muted-foreground">
-              {t('students.studentEmailHint')}
-            </p>
+            <p className="text-xs text-muted-foreground">{t('students.studentEmailHint')}</p>
           </div>
           {error && (
             <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -175,9 +164,7 @@ export default function StudentsList() {
             </div>
             <div>
               <div className="font-medium">{t('students.emptyTitle')}</div>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {t('students.emptyDescription')}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{t('students.emptyDescription')}</p>
             </div>
             <Button onClick={() => setDialogOpen(true)} className="mt-1">
               <Plus className="size-4" />

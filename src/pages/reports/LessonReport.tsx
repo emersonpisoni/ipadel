@@ -74,44 +74,32 @@ export default function LessonReport() {
 
         <section className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
           <div>
-            <div className="text-xs uppercase tracking-wider text-zinc-500">
-              {t('report.student')}
-            </div>
+            <div className="text-xs uppercase tracking-wider text-zinc-500">{t('report.student')}</div>
             <div className="mt-0.5 font-medium">{student.name}</div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wider text-zinc-500">
-              {t('report.teacher')}
-            </div>
+            <div className="text-xs uppercase tracking-wider text-zinc-500">{t('report.teacher')}</div>
             <div className="mt-0.5 font-medium">{teacher.name}</div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wider text-zinc-500">
-              {t('report.lessonDate')}
-            </div>
+            <div className="text-xs uppercase tracking-wider text-zinc-500">{t('report.lessonDate')}</div>
             <div className="mt-0.5 font-medium">{lesson.date}</div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wider text-zinc-500">
-              {t('report.averageScore')}
-            </div>
+            <div className="text-xs uppercase tracking-wider text-zinc-500">{t('report.averageScore')}</div>
             <div className="mt-0.5 font-medium">{avg.toFixed(1)} / 10</div>
           </div>
         </section>
 
         <section className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
-            <div className="text-xs uppercase tracking-wider text-emerald-700">
-              {t('report.highlight')}
-            </div>
+            <div className="text-xs uppercase tracking-wider text-emerald-700">{t('report.highlight')}</div>
             <div className="mt-1 font-medium text-emerald-900">
               {t(`skills.${best.skill}`)} · {best.score}
             </div>
           </div>
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-            <div className="text-xs uppercase tracking-wider text-amber-700">
-              {t('report.needsWork')}
-            </div>
+            <div className="text-xs uppercase tracking-wider text-amber-700">{t('report.needsWork')}</div>
             <div className="mt-1 font-medium text-amber-900">
               {t(`skills.${worst.skill}`)} · {worst.score}
             </div>

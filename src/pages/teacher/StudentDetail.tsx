@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, FileText, Plus } from 'lucide-react'
-import EvolutionChart from '@/components/EvolutionChart'
-import IdeasButton, { type Idea } from '@/components/IdeasButton'
+import EvolutionChart from '@/components/shared/EvolutionChart'
+import IdeasButton, { type Idea } from '@/components/shared/IdeasButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -61,15 +61,12 @@ const IDEAS: Idea[] = [
 ]
 
 const today = () => new Date().toISOString().slice(0, 10)
-
 const DEFAULT_SCORE = 5
 
 const initialScores = (): Record<Skill, number> =>
   Object.fromEntries(SKILLS.map((s) => [s, DEFAULT_SCORE])) as Record<Skill, number>
 
-const scoresFromLastLesson = (
-  lessons: { evaluations: Evaluation[] }[]
-): Record<Skill, number> => {
+const scoresFromLastLesson = (lessons: { evaluations: Evaluation[] }[]): Record<Skill, number> => {
   const last = lessons[lessons.length - 1]
   if (!last) return initialScores()
   const map = initialScores()
@@ -95,12 +92,8 @@ export default function StudentDetail() {
   const [newLessonOpen, setNewLessonOpen] = useState(false)
   const [date, setDate] = useState(today)
   const [observations, setObservations] = useState('')
-  const [scores, setScores] = useState<Record<Skill, number>>(() =>
-    scoresFromLastLesson(lessons)
-  )
-  const [comments, setComments] = useState<Record<Skill, string>>(
-    {} as Record<Skill, string>
-  )
+  const [scores, setScores] = useState<Record<Skill, number>>(() => scoresFromLastLesson(lessons))
+  const [comments, setComments] = useState<Record<Skill, string>>({} as Record<Skill, string>)
 
   if (!profile || profile.role !== 'teacher') return null
   if (!student || !studentId) {
@@ -174,14 +167,11 @@ export default function StudentDetail() {
         </CardHeader>
         <CardContent className="space-y-2">
           {lessons.length === 0 && (
-            <p className="text-sm text-muted-foreground">
-              {t('studentDetail.noLessons')}
-            </p>
+            <p className="text-sm text-muted-foreground">{t('studentDetail.noLessons')}</p>
           )}
           {[...lessons].reverse().map((lesson) => {
             const avg =
-              lesson.evaluations.reduce((s, e) => s + e.score, 0) /
-              lesson.evaluations.length
+              lesson.evaluations.reduce((s, e) => s + e.score, 0) / lesson.evaluations.length
             return (
               <Card key={lesson.id} className="bg-muted/30">
                 <CardContent className="p-3">
@@ -200,9 +190,7 @@ export default function StudentDetail() {
                     </div>
                   </div>
                   {lesson.observations && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {lesson.observations}
-                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">{lesson.observations}</p>
                   )}
                 </CardContent>
               </Card>
